@@ -7,4 +7,4 @@
 # Video de Instalación
 https://www.youtube.com/watch?v=9JT6A5emf3M
 
-![a link](https://raw.githubusercontent.com/jumanor/interoperabilidad-std/envio_documento.png)
+![a link](https://raw.githubusercontent.com/jumanor/interoperabilidad-std/master/envio_documento.png)
