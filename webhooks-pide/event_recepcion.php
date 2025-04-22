@@ -58,7 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $vnumdoc=$data["vnumdoc"];
     $vasu=$data["vasu"];
     $bpdfdoc=$data["bpdfdoc"];
-    
+
+    //$pdo->beginTransaction();
     try{
 
         $vnumregstd=crearDocumentoSGD($bpdfdoc,$vnumdoc,$vasu);
@@ -68,12 +69,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'data' => ["vnumregstd"=>$vnumregstd],
             'error' => null
         ];
-        
+
+         //$pdo->commit();
         http_response_code(200); // OK
         echo json_encode($response);
 
     }catch(Exception $ex){
         
+        //$pdo->rollBack();  
         $response = [
             'estado' => "-1",
             'data' => null,

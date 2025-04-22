@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $vnumregstd=$data["vnumregstd"];
     $cflgest=$data["cflgest"];
 
+     //$pdo->beginTransaction();
     try{
 
         cambiarEstadoToRecibidoSGD($vnumregstd,$cflgest);
@@ -60,11 +61,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'error' => null
         ];
         
+        //$pdo->commit();
         http_response_code(200); // OK
         echo json_encode($response);
 
     }catch(Exception $ex){
         
+        //$pdo->rollBack();  
         $response = [
             'estado' => "-1",
             'data' => null,
