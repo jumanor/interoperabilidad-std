@@ -4,15 +4,16 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-function escribirAlFinalDelArchivo(string $archivoRuta, string $lineaAEscribir)
+function logger(string $archivoRuta, string $lineaAEscribir)
 {
     // Abre el archivo en modo de "append" (agregar al final).
     // El flag 'a' crea el archivo si no existe.
     $archivoManejador = fopen($archivoRuta, 'a');
 
     if ($archivoManejador) {
+        $fechaHora = date('Y-m-d H:i:s');
         // Agrega un salto de línea al final de la línea a escribir (opcional, pero común).
-        $lineaConSalto = $lineaAEscribir . PHP_EOL;
+        $lineaConSalto = '[' . $fechaHora . '] '. $lineaAEscribir . PHP_EOL;
 
         // Escribe la línea en el archivo.
         if (fwrite($archivoManejador, $lineaConSalto) !== false) {
@@ -30,32 +31,52 @@ function escribirAlFinalDelArchivo(string $archivoRuta, string $lineaAEscribir)
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Obtener los datos enviados en el cuerpo de la solicitud
-    $data = $_POST; 
-    $vnumregstd=$data["vnumregstd"];
-    $cflgest=$data["cflgest"];
-
+function cambiarEstadoToRecibidoSGD($vnumregstd,$cflgest){
+    
     if($cflgest=="R"){
-        escribirAlFinalDelArchivo("event_cargo.log",$vnumregstd." ".$cflgest);
+        logger("event_cargo.log",$vnumregstd." ".$cflgest);
 
     }
     if($cflgest=="O"){//documento observado
-        escribirAlFinalDelArchivo("event_cargo.log",$vnumregstd." ".$cflgest);
+        logger("event_cargo.log",$vnumregstd." ".$cflgest);
 
+    }    
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    $data = $_POST; 
+    //varios campos use var_dump($data)
+    $vnumregstd=$data["vnumregstd"];
+    $cflgest=$data["cflgest"];
+
+    try{
+
+        cambiarEstadoToRecibidoSGD($vnumregstd,$cflgest);
+            
+        $response = [
+            'estado' => "0000",
+            'data' => "",
+            'error' => null
+        ];
+        
+        http_response_code(200); // OK
+        echo json_encode($response);
+
+    }catch(Exception $ex){
+        
+        $response = [
+            'estado' => "-1",
+            'data' => null,
+            'error' => $ex->getMessage()
+        ];
+        
+        http_response_code(200); // OK
+        echo json_encode($response);     
+        
     }
 
-    // Construir respuesta con los datos recibidos
-    $response = [
-        'estado' => "0000",
-        'data' => "",
-        'error' => ""
-    ];
-
    
-    // Devolver respuesta en formato JSON
-    http_response_code(200); // OK
-    echo json_encode($response);
 } else {
     // Si no es POST, devolver error
     http_response_code(405); // Método no permitido
