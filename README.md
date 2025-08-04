@@ -1,3 +1,15 @@
+# Release Notes
+- **v1.0.0**
+    - Sincronización de Documentos con Remoto
+    - Removemos ***MessageResources.properties*** de ***configurations-pide***
+    - No se verifica la recepción del ***cargo de recepción*** en la Entidad Remota (ver https://youtu.be/JVE9fJWGQR8)
+    - El estado SUBSANADO esta deprecated (actualmente ninguna Entidad lo utiliza)
+    - Actualizamos la base de datos.
+    - Otros
+
+- **v0.0.3**
+    - Version inicial
+---
 # Instaladores
 - Script de la Base de Datos
 - Componente de Interoperabilidad

@@ -6,8 +6,12 @@ function generarNUMREGSTD() {
 }
 function api_interoperabilidad_ant($url,$params,$method, $token = null){
 		
-    //$postdata = http_build_query($params);
-    $postdata = json_encode($params);
+    if (empty($params)) {
+        $postdata = '';
+    } 
+    else {
+        $postdata = json_encode($params);
+    }
     
     // Inicializar las cabeceras como un array
     $headers = ['Content-type: application/json'];

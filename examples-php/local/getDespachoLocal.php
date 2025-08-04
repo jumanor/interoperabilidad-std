@@ -1,0 +1,33 @@
+<?php
+require_once '../utils.php';
+
+    $vnumregstd = $argv[1];
+
+    $paramAuth=array("userAccessApi"=>"user_access_api");
+    $urlAuth= "http://127.0.0.1:8080/componente-proxy/rest/pide/autenticacion";
+    $resp=api_interoperabilidad_ant($urlAuth, $paramAuth, 'POST');
+    if($resp==null){
+        throw new Exception("Error en la autenticacion");
+    }    
+    if($resp['error']!=null){
+        throw new Exception($resp['error']);
+    } 
+
+    $token = $resp['data'];
+    $url = "http://127.0.0.1:8080/componente-proxy/rest/local/documento/despachado/$vnumregstd/$token";
+
+
+    $resp=api_interoperabilidad_ant($url, [], 'GET');
+    if($resp==null){
+        throw new Exception("Error en rest despacho");
+    }
+    if($resp['error']!=null){
+        throw new Exception($resp['error']);
+    }
+
+    $documentoPdf = base64_decode($resp["data"]["bpdfdoc"]);
+    file_put_contents("despacho_local.pdf", $documentoPdf);
+
+    $resp["data"]["bpdfdoc"]="pdf";
+    var_dump($resp);
+?>

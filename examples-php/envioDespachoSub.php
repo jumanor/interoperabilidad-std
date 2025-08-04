@@ -2,6 +2,7 @@
 require_once 'utils.php';
 
 $vnumregstdref = $argv[1];
+$vnumregstdParam = isset($argv[2]) ? $argv[2] : null;//para probar sincronizacion
 
 $bpdfdoc=base64_encode(file_get_contents("documento_test.pdf"));
 //file_put_contents("test.pdf", $bpdfdoc);
@@ -49,7 +50,7 @@ function wsEnvioDespacho($despacho){
     if($resp==null){
         throw new Exception("Error en la autenticacion");
     }    
-    if($resp['estado']!="0000"){
+    if($resp['error']!=null){
         throw new Exception($resp['error']);
     }   
 
@@ -59,11 +60,11 @@ function wsEnvioDespacho($despacho){
     if($resp==null){
         throw new Exception("Error en rest despacho");
     }
-    if($resp['estado']!="0000"){
+    if($resp['error']!=null){
         throw new Exception($resp['error']);
     }
 
-    return $resp['data'];
+    return $resp;
 }
 
 function persistirEnSGD($despacho){
@@ -74,11 +75,21 @@ function persistirEnSGD($despacho){
 try{
     
     $vnumregstd=persistirEnSGD($despacho);
+    if($vnumregstdParam!=null){
+        $vnumregstd=$vnumregstdParam;
+    }
+    
     $despacho['vnumregstd'] = $vnumregstd;
     $respuesta=wsEnvioDespacho($despacho);
     
+    if($respuesta["estado"]=="0000"){
+        echo "ENVIO REGULAR\n";
+    }
+    if($respuesta["estado"]=="0001"){
+        echo "ENVIO SINCRONIZADO CON REMOTO\n";
+    }
     //$pdo->commit();
-    echo $respuesta;
+    echo $respuesta["data"];
     echo "\n";
 
 }catch(Exception $ex){

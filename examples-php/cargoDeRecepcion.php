@@ -23,7 +23,7 @@ function wsCargoRecepcion($param){
     if($resp==null){
         throw new Exception("Error en la autenticacion");
     }    
-    if($resp['estado']!="0000"){
+    if($resp['error']!=null){
         throw new Exception($resp['error']);
     }
     
@@ -33,11 +33,11 @@ function wsCargoRecepcion($param){
     if($resp==null){
         throw new Exception("Error en rest cargo");
     }
-    if($resp['estado']!="0000"){
+    if($resp['error']!=null){
         throw new Exception($resp['error']);
     }
 
-    return $resp['data'];
+    return $resp;
 
 }
 function persistirEnSGD($param){
@@ -49,9 +49,14 @@ try{
     
     persistirEnSGD($param);
     $respuesta=wsCargoRecepcion($param);
+
+    if($respuesta["estado"]=="0000"){
+        echo "ENVIO REGULAR\n";
+    }
+    
     
     //$pdo->commit();
-    echo $respuesta;
+    echo $respuesta["data"];
     echo "\n";
 
 }catch(Exception $ex){

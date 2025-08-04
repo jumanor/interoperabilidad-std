@@ -45,7 +45,7 @@ function wsEnvioDespacho($despacho){
     if($resp==null){
         throw new Exception("Error en la autenticacion");
     }    
-    if($resp['estado']!="0000"){
+    if($resp['error']!=null){
         throw new Exception($resp['error']);
     }   
 
@@ -55,26 +55,38 @@ function wsEnvioDespacho($despacho){
     if($resp==null){
         throw new Exception("Error en rest despacho");
     }
-    if($resp['estado']!="0000"){
+    if($resp['error']!=null){
         throw new Exception($resp['error']);
     }
 
-    return $resp['data'];
+    return $resp;
 }
 
 function persistirEnSGD($despacho){
     return generarNUMREGSTD();
 }
 
+$vnumregstdParam = isset($argv[1]) ? $argv[1] : null;//para probar sincronizacion
+
 //$pdo->beginTransaction();
 try{
     
     $vnumregstd=persistirEnSGD($despacho);
+    if($vnumregstdParam!=null){
+        $vnumregstd=$vnumregstdParam;
+    }
+   
     $despacho['vnumregstd'] = $vnumregstd;
     $respuesta=wsEnvioDespacho($despacho);
     
+    if($respuesta["estado"]=="0000"){
+        echo "ENVIO REGULAR\n";
+    }
+    if($respuesta["estado"]=="0001"){
+        echo "ENVIO SINCRONIZADO CON REMOTO\n";
+    }
     //$pdo->commit();
-    echo $respuesta;
+    echo $respuesta["data"];
     echo "\n";
 
 }catch(Exception $ex){
