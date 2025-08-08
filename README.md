@@ -1,4 +1,7 @@
 # Release Notes
+- **v1.0.1**
+    - Actualizamos ws2.pide.gob.pe a ws6.pide.gob.pe en entorno de producción
+
 - **v1.0.0**
     - Sincronización de Documentos con Remoto
     - Removemos ***MessageResources.properties*** de ***configurations-pide***
