@@ -1,4 +1,7 @@
 # Release Notes
+- **v1.1.0**
+    - Actualizamos mensaje de respuesta cargoResponse() en wsiotramite.war, cuando el cuo no existe 
+
 - **v1.0.1**
     - Actualizamos ws2.pide.gob.pe a ws6.pide.gob.pe en entorno de producción
 
